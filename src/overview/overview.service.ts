@@ -5,20 +5,29 @@ import { REQUEST } from "@nestjs/core";
 @Injectable()
 export class OverviewService {
 	mockUsers = [
-		{ id: 1, name: "molly" },
-		{ id: 2, name: "joe" },
-		{ id: 3, name: "jane" },
+		{ id: 1, name: "molly", email: "molly@123.com" },
+		{ id: 2, name: "joe", email: "molly@123.com" },
+		{ id: 3, name: "jane", email: "molly@123.com" },
 	];
 	constructor(
 		@Inject(REQUEST)
 		private readonly request: any
 	) {}
+
 	create(createUserDto: CreateUserDto) {
-		console.log(createUserDto);
-		
-		const { testMiddleware } = this.request;
-		console.log(testMiddleware);
-		return `This action adds a new overview ${testMiddleware}`;
+		// console.log(createUserDto);
+		if (
+			this.mockUsers.some((user) => user.id === createUserDto.id) ||
+			this.mockUsers.some((user) => user.email === createUserDto.email)
+		) {
+			throw new NotFoundException(
+				`User #${createUserDto.id} already exists`
+			);
+		}
+		this.mockUsers= [...this.mockUsers, createUserDto];
+		// const { testMiddleware } = this.request;
+		// console.log(testMiddleware);
+		return this.mockUsers;
 	}
 
 	findAll() {

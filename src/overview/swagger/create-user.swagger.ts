@@ -6,12 +6,14 @@ export const createUserOptions: ApiBodyOptions = {
 	examples: {
 		"create user": {
 			value: {
+				id: 1,
 				name: "Bob",
 				email: "lily@gmail.com",
 			},
 		},
 		"incorrect email address": {
 			value: {
+				id: 1,
 				name: "Bob",
 				email: "lilygmail.com",
 			},
