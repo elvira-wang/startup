@@ -1,6 +1,5 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-overview.dto";
-import { REQUEST } from "@nestjs/core";
 
 @Injectable()
 export class OverviewService {
@@ -9,10 +8,7 @@ export class OverviewService {
 		{ id: 2, name: "joe", email: "molly@123.com" },
 		{ id: 3, name: "jane", email: "molly@123.com" },
 	];
-	constructor(
-		@Inject(REQUEST)
-		private readonly request: any
-	) {}
+	constructor() {}
 
 	create(createUserDto: CreateUserDto) {
 		// console.log(createUserDto);
@@ -24,14 +20,15 @@ export class OverviewService {
 				`User #${createUserDto.id} already exists`
 			);
 		}
-		this.mockUsers= [...this.mockUsers, createUserDto];
-		// const { testMiddleware } = this.request;
-		// console.log(testMiddleware);
+		this.mockUsers = [...this.mockUsers, createUserDto];
+
 		return this.mockUsers;
 	}
 
-	findAll() {
+	findAll(req: any) {
 		return this.mockUsers;
+		// const { testMiddleware } = this.request;
+		// console.log(testMiddleware);
 	}
 
 	findOne(id: number) {
@@ -47,6 +44,12 @@ export class OverviewService {
 	}
 
 	remove(id: number) {
-		return `This action removes a #${id} overview`;
+		const user = this.mockUsers.find((user) => user.id === id);
+		if (!user) {
+			throw new NotFoundException(`User #${id} not found`);
+		}
+		const result = this.mockUsers.filter((user) => user.id !== id);
+		this.mockUsers = result;
+		return this.mockUsers;
 	}
 }

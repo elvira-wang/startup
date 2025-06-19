@@ -29,8 +29,8 @@ export class OverviewController {
 	}
 
 	@Get()
-	findAll() {
-		return this.overviewService.findAll();
+	findAll(@Req() req: any) {
+		return this.overviewService.findAll(req);
 	}
 
 	@Get(":id")
@@ -39,15 +39,12 @@ export class OverviewController {
 	}
 
 	@Patch(":id")
-	update(
-		@Param("id") id: string,
-		@Body() updateOverviewDto: any
-	) {
+	update(@Param("id") id: string, @Body() updateOverviewDto: any) {
 		return this.overviewService.update(+id, updateOverviewDto);
 	}
 
 	@Delete(":id")
-	remove(@Param("id") id: string) {
-		return this.overviewService.remove(+id);
+	remove(@Param("id", ParseIntPipe) id: number) {
+		return this.overviewService.remove(id);
 	}
 }
