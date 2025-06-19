@@ -7,18 +7,25 @@ import {
 	Param,
 	Delete,
 	Req,
+	ParseIntPipe,
 } from "@nestjs/common";
 import { OverviewService } from "./overview.service";
-import { CreateOverviewDto } from "./dto/create-overview.dto";
-import { UpdateOverviewDto } from "./dto/update-overview.dto";
+import { CreateUserDto, createUserSchema } from "./dto/create-overview.dto";
+import { ZodValidationPipe } from "./pipes/zod-validation.pipe";
+import { ApiBody } from "@nestjs/swagger";
+import { createUserOptions } from "./swagger/create-user.swagger";
 
 @Controller("overview")
 export class OverviewController {
 	constructor(private readonly overviewService: OverviewService) {}
 
+	@ApiBody(createUserOptions)
 	@Post()
-	create(@Body() createOverviewDto: CreateOverviewDto) {
-		return this.overviewService.create(createOverviewDto);
+	create(
+		@Body(new ZodValidationPipe(createUserSchema))
+		createUserDto: CreateUserDto
+	) {
+		return this.overviewService.create(createUserDto);
 	}
 
 	@Get()
@@ -27,14 +34,14 @@ export class OverviewController {
 	}
 
 	@Get(":id")
-	findOne(@Param("id") id: string) {
-		return this.overviewService.findOne(+id);
+	findOne(@Param("id", ParseIntPipe) id: number) {
+		return this.overviewService.findOne(id);
 	}
 
 	@Patch(":id")
 	update(
 		@Param("id") id: string,
-		@Body() updateOverviewDto: UpdateOverviewDto
+		@Body() updateOverviewDto: any
 	) {
 		return this.overviewService.update(+id, updateOverviewDto);
 	}

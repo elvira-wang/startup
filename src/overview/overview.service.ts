@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateOverviewDto } from "./dto/create-overview.dto";
-import { UpdateOverviewDto } from "./dto/update-overview.dto";
+import { CreateUserDto } from "./dto/create-overview.dto";
 import { REQUEST } from "@nestjs/core";
 
 @Injectable()
@@ -14,7 +13,9 @@ export class OverviewService {
 		@Inject(REQUEST)
 		private readonly request: any
 	) {}
-	create(createOverviewDto: CreateOverviewDto) {
+	create(createUserDto: CreateUserDto) {
+		console.log(createUserDto);
+		
 		const { testMiddleware } = this.request;
 		console.log(testMiddleware);
 		return `This action adds a new overview ${testMiddleware}`;
@@ -32,7 +33,7 @@ export class OverviewService {
 		return user;
 	}
 
-	update(id: number, updateOverviewDto: UpdateOverviewDto) {
+	update(id: number, updateOverviewDto: any) {
 		return `This action updates a #${id} overview`;
 	}
 
