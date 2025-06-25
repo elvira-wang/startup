@@ -13,11 +13,14 @@ import {
 import { OverviewService } from "./overview.service";
 import { CreateUserDto, createUserSchema } from "./dto/create-overview.dto";
 import { ZodValidationPipe } from "./pipes/zod-validation.pipe";
-import { ApiBody } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody } from "@nestjs/swagger";
 import { createUserOptions } from "./swagger/create-user.swagger";
 import { RolesGuard } from "./guards/roles.guard";
 import { SignUpDto, signUpSchema } from "./dto/signup-overview.dto";
 import { signUpOptions } from "./swagger/signup.swagger";
+import { SignInDto, signInSchema } from "./dto/signin-overview.dto";
+import { signInOptions } from "./swagger/signin.swagger";
+import { JwtGuard } from "./guards/jwt.guard";
 
 @Controller("overview")
 export class OverviewController {
@@ -50,6 +53,8 @@ export class OverviewController {
 		return this.overviewService.create(createUserDto);
 	}
 
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
 	@Get()
 	findAll(@Req() req: any) {
 		return this.overviewService.findAll(req);

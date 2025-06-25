@@ -6,7 +6,7 @@ export const signUpOptions: ApiBodyOptions = {
 	examples: {
 		"create user": {
 			value: {
-				email: "lily@gmail.com",
+				email: "butterfly@yoyo.com",
 				password: "abc12300",
 			},
 		},

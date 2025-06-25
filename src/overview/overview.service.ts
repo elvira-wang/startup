@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+	Injectable,
+	NotFoundException,
+	UnauthorizedException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-overview.dto";
 import * as bcrypt from "bcrypt";
 import { SignUpDto } from "./dto/signup-overview.dto";
+import { SignInDto } from "./dto/signin-overview.dto";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class OverviewService {
@@ -10,7 +16,7 @@ export class OverviewService {
 		{ id: 2, name: "joe", email: "joe@123.com", password: "23456789" },
 		{ id: 3, name: "jane", email: "jane@123.com", password: "34567890" },
 	];
-	constructor() {}
+	constructor(private jwtService: JwtService) {}
 
 	async signup(signUpDto: SignUpDto) {
 		const { email, password } = signUpDto;
@@ -23,6 +29,23 @@ export class OverviewService {
 		};
 		this.mockUsers = [...this.mockUsers, newUser as any];
 		return newUser;
+	}
+
+	async signin(signInDto: SignInDto) {
+		const { email, password } = signInDto;
+		const user = this.mockUsers.find((user) => user.email === email);
+		if (!user) {
+			throw new NotFoundException(`User with email ${email} not found`);
+		}
+		const isPasswordValid = await bcrypt.compare(password, user.password);
+		if (!isPasswordValid) {
+			throw new UnauthorizedException("Invalid credentials");
+		}
+		const token = this.jwtService.sign(
+			{ email: user.email },
+			{ secret: process.env.SECRET }
+		);
+		return token;
 	}
 
 	create(createUserDto: CreateUserDto) {
