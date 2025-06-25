@@ -8,12 +8,14 @@ import {
 	Delete,
 	Req,
 	ParseIntPipe,
+	UseGuards,
 } from "@nestjs/common";
 import { OverviewService } from "./overview.service";
 import { CreateUserDto, createUserSchema } from "./dto/create-overview.dto";
 import { ZodValidationPipe } from "./pipes/zod-validation.pipe";
 import { ApiBody } from "@nestjs/swagger";
 import { createUserOptions } from "./swagger/create-user.swagger";
+import { RolesGuard } from "./guards/roles.guard";
 
 @Controller("overview")
 export class OverviewController {
@@ -43,6 +45,7 @@ export class OverviewController {
 		return this.overviewService.update(+id, updateOverviewDto);
 	}
 
+	@UseGuards(RolesGuard)
 	@Delete(":id")
 	remove(@Param("id", ParseIntPipe) id: number) {
 		return this.overviewService.remove(id);
