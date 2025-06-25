@@ -5,6 +5,9 @@ export const createUserSchema = z
 		id: z.number().int(),
 		name: z.string(),
 		email: z.string().email(),
+		password: z
+			.string()
+			.min(8, "password must be at least 8 characters long"),
 	})
 	.required();
 
